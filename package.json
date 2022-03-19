@@ -1,0 +1,28 @@
+{
+  "name": "@marcreichel/alpine-timeago",
+  "version": "0.0.0",
+  "description": "Display the time difference between now and a given date in a human readable format",
+  "license": "MIT",
+  "author": {
+    "name": "Marc Reichel",
+    "url": "https://marcreichel.dev/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcreichel/alpine-timeago.git"
+  },
+  "main": "src/index.js",
+  "bugs": {
+    "url": "https://github.com/marcreichel/alpine-timeago/issues"
+  },
+  "homepage": "https://github.com/marcreichel/alpine-timeago#readme",
+  "dependencies": {
+    "date-fns": "^2.14.0"
+  },
+  "files": [
+    "LICENSE.md",
+    "README.md",
+    "src/index.js",
+    "package.json"
+  ]
+}
