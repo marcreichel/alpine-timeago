@@ -1,4 +1,4 @@
 /node_modules
 /.idea
-marcreichel-alpine-timeago-*.tgz
+*.tgz
 package-lock.json
