@@ -1,7 +1,7 @@
 <h1 align="center">⏱ Alpine TimeAgo ⏱</h1>
 
 <p align="center">
-  An <a href="https://alpinejs.dev">Alpine.js</a> plugin to return the distance between a given date and now in words.
+  An <a href="https://alpinejs.dev">Alpine.js</a> plugin to return the distance between a given date and now in words (like "3 months ago", "about 2 hours ago" or "in about 5 hours").
 </p>
 
 <p align="center">
