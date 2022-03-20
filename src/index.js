@@ -3,7 +3,7 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 let locale = null;
 
 function TimeAgo(Alpine) {
-    Alpine.directive('timeago', (el, { expression }, { evaluateLater, effect, cleanup }) => {
+    Alpine.directive('timeago', (el, { expression, modifiers }, { evaluateLater, effect, cleanup }) => {
         let evaluateDate = evaluateLater(expression);
 
         const render = (date) => {
@@ -12,7 +12,7 @@ function TimeAgo(Alpine) {
                     date = parseISO(date);
                 }
                 el.textContent = formatDistanceToNow(date, {
-                    addSuffix: true,
+                    addSuffix: !modifiers.includes('pure'),
                     locale,
                 });
             } catch (e) {

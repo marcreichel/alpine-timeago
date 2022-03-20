@@ -63,7 +63,15 @@ every 30 seconds.
 Under the hood the directive is using [`formatDistanceToNow`](https://date-fns.org/v2.28.0/docs/formatDistanceToNow)
 from `date-fns`.
 
-### Hooks
+### No suffix
+
+If you do not want the "[diff] ago" suffix or "in [diff]" prefix, you can use the `x-timeago.pure` modifier.
+
+```html
+<span x-data="{ date: new Date() }" x-timeago.pure="date"></span>
+```
+
+### Other locales
 
 If you are using the `npm` installation method for this package or the ESM distribution, you can use the
 `TimeAgo.configure()` method to provide a different locale from `date-fns`.
