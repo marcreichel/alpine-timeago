@@ -8,8 +8,11 @@
   <a href="https://www.npmjs.com/package/@marcreichel/alpine-timeago">
     <img src="https://img.shields.io/github/v/tag/marcreichel/alpine-timeago?label=version" alt="version">
   </a>
-  <a href="https://www.npmjs.com/package/@marcreichel/alpine-autosize">
+  <a href="https://www.npmjs.com/package/@marcreichel/alpine-timeago">
     <img src="https://img.badgesize.io/marcreichel/alpine-timeago/main/dist/alpine-timeago.js.svg?compression=gzip&color=green" alt="Build size">
+  </a>
+  <a href="https://www.npmjs.com/package/@marcreichel/alpine-timeago">
+    <img src="https://img.shields.io/npm/dt/@marcreichel/alpine-timeago" alt="downloads">
   </a>
   <a href="https://www.jsdelivr.com/package/npm/@marcreichel/alpine-timeago">
     <img src="https://data.jsdelivr.com/v1/package/npm/@marcreichel/alpine-timeago/badge?style=rounded" alt="JSDelivr">
