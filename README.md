@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/github/v/tag/marcreichel/alpine-timeago?label=version" alt="version">
   </a>
   <a href="https://www.npmjs.com/package/@marcreichel/alpine-timeago">
-    <img src="https://img.badgesize.io/marcreichel/alpine-timeago/main/dist/alpine-timeago.js.svg?compression=gzip&color=green" alt="Build size">
+    <img src="https://img.badgesize.io/marcreichel/alpine-timeago/main/dist/alpine-timeago.min.js.svg?compression=gzip&color=green" alt="Build size">
   </a>
   <a href="https://www.npmjs.com/package/@marcreichel/alpine-timeago">
     <img src="https://img.shields.io/npm/dt/@marcreichel/alpine-timeago" alt="downloads">
@@ -72,6 +72,14 @@ If you do not want the "[diff] ago" suffix or "in [diff]" prefix, you can use th
 
 ```html
 <span x-data="{ date: new Date() }" x-timeago.pure="date"></span>
+```
+
+### Include seconds
+
+Distances less than a minute are more detailed.
+
+```html
+<span x-data="{ date: new Date() }" x-timeago.seconds="date"></span>
 ```
 
 ### Other locales

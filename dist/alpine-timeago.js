@@ -1571,7 +1571,8 @@
 
   function TimeAgo(Alpine) {
     Alpine.directive('timeago', (el, {
-      expression
+      expression,
+      modifiers
     }, {
       evaluateLater,
       effect,
@@ -1581,12 +1582,9 @@
 
       const render = date => {
         try {
-          if (typeof date === 'string') {
-            date = parseISO(date);
-          }
-
           el.textContent = formatDistanceToNow(date, {
-            addSuffix: true,
+            addSuffix: !modifiers.includes('pure'),
+            includeSeconds: modifiers.includes('seconds'),
             locale
           });
         } catch (e) {
@@ -1601,10 +1599,20 @@
             clearInterval(interval);
           }
 
+          if (typeof date === 'string') {
+            date = parseISO(date);
+          }
+
           render(date);
+          let intervalDuration = 30000;
+
+          if (modifiers.includes('seconds') && differenceInSeconds(new Date(), date) < 90) {
+            intervalDuration = 5000;
+          }
+
           interval = setInterval(() => {
             render(date);
-          }, 30000);
+          }, intervalDuration);
         });
       });
       cleanup(() => clearInterval(interval));
