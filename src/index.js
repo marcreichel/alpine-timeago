@@ -33,7 +33,7 @@ function TimeAgo(Alpine) {
                 render(date);
 
                 let intervalDuration = 30000;
-                if (modifiers.includes('seconds') && differenceInSeconds(new Date(), date) < 90) {
+                if (modifiers.includes('seconds')) {
                     intervalDuration = 5000;
                 }
 
