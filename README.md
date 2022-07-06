@@ -55,6 +55,8 @@ window.Alpine.start();
 
 ## 🪄 Usage
 
+### Directive
+
 To convert a Date to the human-readable distance from now, add the `x-data` and `x-timeago` directives to an element and
 pass the date (as a `Date` or a string in ISO format) to the `x-timeago` directive. The directive will update the output
 every 30 seconds.
@@ -66,7 +68,7 @@ every 30 seconds.
 Under the hood the directive is using [`formatDistanceToNow`](https://date-fns.org/v2.28.0/docs/formatDistanceToNow)
 from `date-fns`.
 
-### No suffix
+#### No suffix
 
 If you do not want the "[diff] ago" suffix or "in [diff]" prefix, you can use the `x-timeago.pure` modifier.
 
@@ -74,12 +76,42 @@ If you do not want the "[diff] ago" suffix or "in [diff]" prefix, you can use th
 <span x-data="{ date: new Date() }" x-timeago.pure="date"></span>
 ```
 
-### Include seconds
+#### Include seconds
 
 Distances less than a minute are more detailed.
 
 ```html
 <span x-data="{ date: new Date() }" x-timeago.seconds="date"></span>
+```
+
+### Magic function
+
+As of version 1.3.0 of this package a `$timeago` magic function is included which will return the human-readable
+distance from now.
+
+```html
+<span x-data="{ date: new Date() }" x-text="$timeago(date)"></span>
+```
+
+> **Note**: Using the magic function the distance does not get updated automatically. You have to update it yourself if
+> you want to.
+
+#### No suffix
+
+If you do not want the "[diff] ago" suffix or "in [diff]" prefix, you can provide `true` as the second parameter to the
+function.
+
+```html
+<span x-data="{ date: new Date() }" x-text="$timeago(date, true)"></span>
+```
+
+#### Include seconds
+
+If you want distances less than a minute to be more detailed, you can provide `true` as the third parameter to the
+function.
+
+```html
+<span x-data="{ date: new Date() }" x-text="$timeago(date, null, true)"></span>
 ```
 
 ### Other locales

@@ -15,5 +15,9 @@
 <div x-data="{ date: new Date() }" x-timeago.pure="date"></div>
 <div x-data="{ date: new Date() }" x-timeago.seconds="date"></div>
 <div x-data="{ date: new Date() }" x-timeago.pure.seconds="date"></div>
+<div x-data="{ date: new Date() }" x-text="$timeago(date)"></div>
+<div x-data="{ date: new Date() }" x-text="$timeago(date, true)"></div>
+<div x-data="{ date: new Date() }" x-text="$timeago(date, null, true)"></div>
+<div x-data="{ date: new Date() }" x-text="$timeago(date, true, true)"></div>
 </body>
 </html>
