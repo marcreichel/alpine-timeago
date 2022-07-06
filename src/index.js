@@ -1,4 +1,4 @@
-import { differenceInSeconds, formatDistanceToNow, parseISO } from 'date-fns';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 let locale = null;
 
@@ -44,6 +44,20 @@ function TimeAgo(Alpine) {
         });
 
         cleanup(() => clearInterval(interval));
+    });
+
+    Alpine.magic('timeago', el => (expression, pure, seconds) => {
+        if (pure == null) {
+            pure = false;
+        }
+        if (seconds == null) {
+            seconds = false;
+        }
+        return formatDistanceToNow(expression, {
+            addSuffix: !pure,
+            includeSeconds: seconds,
+            locale,
+        })
     });
 }
 

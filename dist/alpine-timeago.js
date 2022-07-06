@@ -1606,7 +1606,7 @@
           render(date);
           let intervalDuration = 30000;
 
-          if (modifiers.includes('seconds') && differenceInSeconds(new Date(), date) < 90) {
+          if (modifiers.includes('seconds')) {
             intervalDuration = 5000;
           }
 
@@ -1616,6 +1616,21 @@
         });
       });
       cleanup(() => clearInterval(interval));
+    });
+    Alpine.magic('timeago', el => (expression, pure, seconds) => {
+      if (pure == null) {
+        pure = false;
+      }
+
+      if (seconds == null) {
+        seconds = false;
+      }
+
+      return formatDistanceToNow(expression, {
+        addSuffix: !pure,
+        includeSeconds: seconds,
+        locale
+      });
     });
   }
 
