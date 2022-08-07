@@ -41,7 +41,7 @@ Include the following `<script>` tag in the `<head>` of your document, just befo
 npm install @marcreichel/alpine-timeago
 ```
 
-Add the `x-timeago` directive to your project by importing the package **before** Alpine.js.
+Add the `x-timeago` directive to your project by importing the package **before** starting Alpine.
 
 ```js
 import Alpine from 'alpinejs';
@@ -49,8 +49,7 @@ import TimeAgo from '@marcreichel/alpine-timeago';
 
 Alpine.plugin(TimeAgo);
 
-window.Alpine = Alpine;
-window.Alpine.start();
+Alpine.start();
 ```
 
 ## 🪄 Usage
