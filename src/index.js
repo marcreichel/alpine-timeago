@@ -1,4 +1,4 @@
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import {formatDistanceToNow, formatDistanceToNowStrict, parseISO} from 'date-fns';
 
 let locale = null;
 
@@ -8,11 +8,28 @@ function TimeAgo(Alpine) {
 
         const render = (date) => {
             try {
-                el.textContent = formatDistanceToNow(date, {
-                    addSuffix: !modifiers.includes('pure'),
-                    includeSeconds: modifiers.includes('seconds'),
-                    locale,
-                });
+                if (modifiers.includes('strict')) {
+                    let unit = modifiers.includes('unit') ? modifiers[modifiers.findIndex((modifier) => modifier === 'unit') + 1] || undefined : undefined;
+                    if (!['second', 'minute', 'hour', 'day', 'month', 'year'].includes(unit)) {
+                       unit = undefined;
+                    }
+                    let roundingMethod = modifiers.includes('rounding') ? modifiers[modifiers.findIndex((modifier) => modifier === 'rounding') + 1] || undefined : undefined;
+                    if (!['floor', 'ceil', 'round'].includes(roundingMethod)) {
+                        roundingMethod = undefined;
+                    }
+                    el.textContent = formatDistanceToNowStrict(date, {
+                        addSuffix: !modifiers.includes('pure'),
+                        unit,
+                        roundingMethod,
+                        locale,
+                    });
+                } else {
+                    el.textContent = formatDistanceToNow(date, {
+                        addSuffix: !modifiers.includes('pure'),
+                        includeSeconds: modifiers.includes('seconds'),
+                        locale,
+                    });
+                }
             } catch (e) {
                 console.error(e);
             }
@@ -46,12 +63,20 @@ function TimeAgo(Alpine) {
         cleanup(() => clearInterval(interval));
     });
 
-    Alpine.magic('timeago', el => (expression, pure, seconds) => {
+    Alpine.magic('timeago', () => (expression, pure, seconds, strictOptions) => {
         if (pure == null) {
             pure = false;
         }
         if (seconds == null) {
             seconds = false;
+        }
+        if (strictOptions != null && (strictOptions['strict'] || undefined)) {
+            return formatDistanceToNowStrict(expression, {
+                addSuffix: !pure,
+                unit: strictOptions['unit'] || undefined,
+                roundingMethod: strictOptions['roundingMethod'] || undefined,
+                locale,
+            })
         }
         return formatDistanceToNow(expression, {
             addSuffix: !pure,
