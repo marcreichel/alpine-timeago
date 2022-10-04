@@ -32,7 +32,6 @@
 Include the following `<script>` tag in the `<head>` of your document, just before Alpine.
 
 ```html
-
 <script src="https://cdn.jsdelivr.net/npm/@marcreichel/alpine-timeago@latest/dist/alpine-timeago.min.js" defer></script>
 ```
 
