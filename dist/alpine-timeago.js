@@ -1894,115 +1894,135 @@
     return minutes >= 0 && minutes <= 59;
   }
 
-  let locale = null;
-
+  var locale = null;
   function TimeAgo(Alpine) {
-    Alpine.directive('timeago', (el, {
-      expression,
-      modifiers
-    }, {
-      evaluateLater,
-      effect,
-      cleanup
-    }) => {
-      let evaluateDate = evaluateLater(expression);
-
-      const render = date => {
-        try {
-          if (modifiers.includes('strict')) {
-            let unit = modifiers.includes('unit') ? modifiers[modifiers.findIndex(modifier => modifier === 'unit') + 1] || undefined : undefined;
-
-            if (!['second', 'minute', 'hour', 'day', 'month', 'year'].includes(unit)) {
-              unit = undefined;
-            }
-
-            let roundingMethod = modifiers.includes('rounding') ? modifiers[modifiers.findIndex(modifier => modifier === 'rounding') + 1] || undefined : undefined;
-
-            if (!['floor', 'ceil', 'round'].includes(roundingMethod)) {
-              roundingMethod = undefined;
-            }
-
-            el.textContent = formatDistanceToNowStrict(date, {
-              addSuffix: !modifiers.includes('pure'),
-              unit,
-              roundingMethod,
-              locale
-            });
-          } else {
-            el.textContent = formatDistanceToNow(date, {
-              addSuffix: !modifiers.includes('pure'),
-              includeSeconds: modifiers.includes('seconds'),
-              locale
-            });
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      };
-
-      let interval;
-      effect(() => {
-        evaluateDate(date => {
-          if (interval) {
-            clearInterval(interval);
-          }
-
-          if (typeof date === 'string') {
-            date = parseISO(date);
-          }
-
-          render(date);
-          let intervalDuration = 30000;
-
-          if (modifiers.includes('seconds')) {
-            intervalDuration = 5000;
-          }
-
-          interval = setInterval(() => {
-            render(date);
-          }, intervalDuration);
-        });
+      Alpine.directive('timeago', function (el, _a, _b) {
+          var expression = _a.expression, modifiers = _a.modifiers;
+          var evaluateLater = _b.evaluateLater, effect = _b.effect, cleanup = _b.cleanup;
+          var evaluateDate = evaluateLater(expression);
+          var render = function (date) {
+              try {
+                  if (modifiers.includes('strict')) {
+                      var unit = void 0;
+                      if (modifiers.includes('unit')) {
+                          var innerUnit = modifiers[modifiers.findIndex(function (modifier) { return modifier === 'unit'; }) + 1] || undefined;
+                          switch (innerUnit) {
+                              case 'second':
+                                  unit = 'second';
+                                  break;
+                              case 'minute':
+                                  unit = 'minute';
+                                  break;
+                              case 'hour':
+                                  unit = 'hour';
+                                  break;
+                              case 'day':
+                                  unit = 'day';
+                                  break;
+                              case 'month':
+                                  unit = 'month';
+                                  break;
+                              case 'year':
+                                  unit = 'year';
+                                  break;
+                              default:
+                                  unit = undefined;
+                                  break;
+                          }
+                      }
+                      var roundingMethod = void 0;
+                      if (modifiers.includes('rounding')) {
+                          var innerRounding = modifiers[modifiers.findIndex(function (modifier) { return modifier === 'rounding'; }) + 1] || undefined;
+                          switch (innerRounding) {
+                              case 'floor':
+                                  roundingMethod = 'floor';
+                                  break;
+                              case 'ceil':
+                                  roundingMethod = 'ceil';
+                                  break;
+                              case 'round':
+                                  roundingMethod = 'round';
+                                  break;
+                              default:
+                                  roundingMethod = undefined;
+                                  break;
+                          }
+                      }
+                      el.textContent = formatDistanceToNowStrict(date, {
+                          addSuffix: !modifiers.includes('pure'),
+                          unit: unit,
+                          roundingMethod: roundingMethod,
+                          locale: locale
+                      });
+                  }
+                  else {
+                      el.textContent = formatDistanceToNow(date, {
+                          addSuffix: !modifiers.includes('pure'),
+                          includeSeconds: modifiers.includes('seconds'),
+                          locale: locale
+                      });
+                  }
+              }
+              catch (e) {
+                  console.error(e);
+              }
+          };
+          var interval;
+          effect(function () {
+              evaluateDate(function (date) {
+                  if (interval) {
+                      clearInterval(interval);
+                  }
+                  var parsedDate;
+                  if (typeof date === 'string') {
+                      parsedDate = parseISO(date);
+                  }
+                  else {
+                      parsedDate = date;
+                  }
+                  render(parsedDate);
+                  var intervalDuration = 30000;
+                  if (modifiers.includes('seconds')) {
+                      intervalDuration = 5000;
+                  }
+                  interval = setInterval(function () {
+                      render(parsedDate);
+                  }, intervalDuration);
+              });
+          });
+          cleanup(function () { return clearInterval(interval); });
       });
-      cleanup(() => clearInterval(interval));
-    });
-    Alpine.magic('timeago', () => (expression, pure, seconds, strictOptions) => {
-      if (pure == null) {
-        pure = false;
-      }
-
-      if (seconds == null) {
-        seconds = false;
-      }
-
-      if (strictOptions != null && (strictOptions['strict'] || undefined)) {
-        return formatDistanceToNowStrict(expression, {
-          addSuffix: !pure,
-          unit: strictOptions['unit'] || undefined,
-          roundingMethod: strictOptions['roundingMethod'] || undefined,
-          locale
-        });
-      }
-
-      return formatDistanceToNow(expression, {
-        addSuffix: !pure,
-        includeSeconds: seconds,
-        locale
-      });
-    });
+      Alpine.magic('timeago', function () { return function (expression, pure, seconds, strictOptions) {
+          if (pure == null) {
+              pure = false;
+          }
+          if (seconds == null) {
+              seconds = false;
+          }
+          if (strictOptions != null && (strictOptions['strict'] || undefined)) {
+              return formatDistanceToNowStrict(expression, {
+                  addSuffix: !pure,
+                  unit: strictOptions['unit'] || undefined,
+                  roundingMethod: strictOptions['roundingMethod'] || undefined,
+                  locale: locale
+              });
+          }
+          return formatDistanceToNow(expression, {
+              addSuffix: !pure,
+              includeSeconds: seconds,
+              locale: locale
+          });
+      }; });
   }
-
-  TimeAgo.configure = config => {
-    if (config.hasOwnProperty('locale') && typeof config.locale === 'object') {
-      if (config.locale.hasOwnProperty('formatDistance')) {
-        locale = config.locale;
+  TimeAgo.configure = function (config) {
+      if (config.locale) {
+          locale = config.locale;
       }
-    }
-
-    return TimeAgo;
+      return TimeAgo;
   };
 
-  document.addEventListener('alpine:init', () => {
-    TimeAgo(window.Alpine);
+  document.addEventListener('alpine:init', function () {
+      TimeAgo(window.Alpine);
   });
 
 }));

@@ -21,11 +21,14 @@
   },
   "homepage": "https://github.com/marcreichel/alpine-timeago#readme",
   "dependencies": {
-    "date-fns": "^2.14.0"
+    "@rollup/plugin-typescript": "^9.0.2",
+    "date-fns": "^2.14.0",
+    "tslib": "^2.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
+    "@types/alpinejs": "^3.7.1",
     "rollup": "^2.67.2",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-filesize": "^9.1.2",
