@@ -30,7 +30,7 @@ jobs:
         uses: technote-space/package-version-check-action@v1
         with:
           COMMIT_DISABLED: 1
-      - run: npm ci
+      - run: npm install
       - run: npm run build
       - run: npm publish --access public
         env:

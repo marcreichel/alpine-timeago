@@ -11,5 +11,5 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ^16.0.0
-      - run: npm ci
+      - run: npm install
       - run: npm run build
