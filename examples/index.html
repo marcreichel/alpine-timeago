@@ -1,53 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Alpine Timeago Examples</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Alpine Timeago Examples</title>
 
-    <script defer src="../dist/alpine-timeago.min.js"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body>
-<h2>Default</h2>
-<div x-data="{ date: new Date() }" x-timeago="date"></div>
-<h2>Pure</h2>
-<div x-data="{ date: new Date() }" x-timeago.pure="date"></div>
-<h2>With seconds</h2>
-<div x-data="{ date: new Date() }" x-timeago.seconds="date"></div>
-<h2>With pure seconds</h2>
-<div x-data="{ date: new Date() }" x-timeago.pure.seconds="date"></div>
-<h2>Strict</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict="date"></div>
-<h2>Strict unit (seconds)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.unit.second="date"></div>
-<h2>Strict unit (minutes)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.unit.minute="date"></div>
-<h2>Strict unit (hours)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.unit.hour="date"></div>
-<h2>Strict unit (days)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.unit.day="date"></div>
-<h2>Strict unit (months)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.unit.month="date"></div>
-<h2>Strict unit (years)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.unit.year="date"></div>
-<h2>Strict roundingMethod (floor)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.rounding.floor="date"></div>
-<h2>Strict roundingMethod (ceil)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.rounding.ceil="date"></div>
-<h2>Strict roundingMethod (round)</h2>
-<div x-data="{ date: new Date() }" x-timeago.strict.rounding.round="date"></div>
-<h2>Magic</h2>
-<div x-data="{ date: new Date() }" x-text="$timeago(date)"></div>
-<h2>Magic (pure)</h2>
-<div x-data="{ date: new Date() }" x-text="$timeago(date, true)"></div>
-<h2>Magic (seconds)</h2>
-<div x-data="{ date: new Date() }" x-text="$timeago(date, null, true)"></div>
-<h2>Magic (pure seconds)</h2>
-<div x-data="{ date: new Date() }" x-text="$timeago(date, true, true)"></div>
-<h2>Magic (strict)</h2>
-<div x-data="{ date: new Date() }" x-text="$timeago(date, null, null, { strict: true })"></div>
-</body>
+        <script defer src="../dist/alpine-timeago.min.js"></script>
+        <script
+            defer
+            src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+        ></script>
+    </head>
+    <body>
+        <h2>Default</h2>
+        <div x-data="{ date: new Date() }" x-timeago="date"></div>
+        <h2>Pure</h2>
+        <div x-data="{ date: new Date() }" x-timeago.pure="date"></div>
+        <h2>With seconds</h2>
+        <div x-data="{ date: new Date() }" x-timeago.seconds="date"></div>
+        <h2>With pure seconds</h2>
+        <div x-data="{ date: new Date() }" x-timeago.pure.seconds="date"></div>
+        <h2>Strict</h2>
+        <div x-data="{ date: new Date() }" x-timeago.strict="date"></div>
+        <h2>Strict unit (seconds)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.unit.second="date"
+        ></div>
+        <h2>Strict unit (minutes)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.unit.minute="date"
+        ></div>
+        <h2>Strict unit (hours)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.unit.hour="date"
+        ></div>
+        <h2>Strict unit (days)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.unit.day="date"
+        ></div>
+        <h2>Strict unit (months)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.unit.month="date"
+        ></div>
+        <h2>Strict unit (years)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.unit.year="date"
+        ></div>
+        <h2>Strict roundingMethod (floor)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.rounding.floor="date"
+        ></div>
+        <h2>Strict roundingMethod (ceil)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.rounding.ceil="date"
+        ></div>
+        <h2>Strict roundingMethod (round)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-timeago.strict.rounding.round="date"
+        ></div>
+        <h2>Magic</h2>
+        <div x-data="{ date: new Date() }" x-text="$timeago(date)"></div>
+        <h2>Magic (pure)</h2>
+        <div x-data="{ date: new Date() }" x-text="$timeago(date, true)"></div>
+        <h2>Magic (seconds)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-text="$timeago(date, null, true)"
+        ></div>
+        <h2>Magic (pure seconds)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-text="$timeago(date, true, true)"
+        ></div>
+        <h2>Magic (strict)</h2>
+        <div
+            x-data="{ date: new Date() }"
+            x-text="$timeago(date, null, null, { strict: true })"
+        ></div>
+    </body>
 </html>
