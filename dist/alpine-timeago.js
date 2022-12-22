@@ -1905,9 +1905,7 @@
                   if (modifiers.includes('strict')) {
                       var unit = void 0;
                       if (modifiers.includes('unit')) {
-                          var innerUnit = modifiers[modifiers.findIndex(function (modifier) {
-                              return modifier === 'unit';
-                          }) + 1] || undefined;
+                          var innerUnit = modifiers[modifiers.findIndex(function (modifier) { return modifier === 'unit'; }) + 1] || undefined;
                           switch (innerUnit) {
                               case 'second':
                                   unit = 'second';
@@ -1934,9 +1932,7 @@
                       }
                       var roundingMethod = void 0;
                       if (modifiers.includes('rounding')) {
-                          var innerRounding = modifiers[modifiers.findIndex(function (modifier) {
-                              return modifier === 'rounding';
-                          }) + 1] || undefined;
+                          var innerRounding = modifiers[modifiers.findIndex(function (modifier) { return modifier === 'rounding'; }) + 1] || undefined;
                           switch (innerRounding) {
                               case 'floor':
                                   roundingMethod = 'floor';
@@ -1996,25 +1992,27 @@
           });
           cleanup(function () { return clearInterval(interval); });
       });
-      Alpine.magic('timeago', function () {
-          return function (expression, pure, seconds, strictOptions) {
-              if (pure === void 0) { pure = false; }
-              if (seconds === void 0) { seconds = false; }
-              if (strictOptions && strictOptions.strict) {
-                  return formatDistanceToNowStrict(expression, {
-                      addSuffix: !pure,
-                      unit: strictOptions.unit,
-                      roundingMethod: strictOptions.roundingMethod,
-                      locale: locale
-                  });
-              }
-              return formatDistanceToNow(expression, {
+      Alpine.magic('timeago', function () { return function (expression, pure, seconds, strictOptions) {
+          if (pure == null) {
+              pure = false;
+          }
+          if (seconds == null) {
+              seconds = false;
+          }
+          if (strictOptions != null && (strictOptions['strict'] || undefined)) {
+              return formatDistanceToNowStrict(expression, {
                   addSuffix: !pure,
-                  includeSeconds: seconds,
+                  unit: strictOptions['unit'] || undefined,
+                  roundingMethod: strictOptions['roundingMethod'] || undefined,
                   locale: locale
               });
-          };
-      });
+          }
+          return formatDistanceToNow(expression, {
+              addSuffix: !pure,
+              includeSeconds: seconds,
+              locale: locale
+          });
+      }; });
   }
   TimeAgo.configure = function (config) {
       if (config.locale) {
