@@ -11,7 +11,7 @@
         "type": "git",
         "url": "git+https://github.com/marcreichel/alpine-timeago.git"
     },
-    "main": "src/index.js",
+    "main": "dist/alpine-timeago.min.js",
     "scripts": {
         "build": "rollup -c",
         "watch": "rollup -c -w"
