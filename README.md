@@ -32,10 +32,7 @@
 Include the following `<script>` tag in the `<head>` of your document, just before Alpine.
 
 ```html
-<script
-    src="https://cdn.jsdelivr.net/npm/@marcreichel/alpine-timeago@latest/dist/alpine-timeago.min.js"
-    defer
-></script>
+<script src="https://cdn.jsdelivr.net/npm/@marcreichel/alpine-timeago@latest/dist/alpine-timeago.min.js" defer></script>
 ```
 
 ### NPM
@@ -102,21 +99,21 @@ The strict mode comes with its own set of modifiers for controlling the output.
 
 Use the `x-timeago.strict.unit.[unit]` modifier with one of the following units to force the unit in the output.
 
--   `second` (e.g. `x-timeago.strict.unit.second`)
--   `minute` (e.g. `x-timeago.strict.unit.minute`)
--   `hour` (e.g. `x-timeago.strict.unit.hour`)
--   `day` (e.g. `x-timeago.strict.unit.day`)
--   `month` (e.g. `x-timeago.strict.unit.month`)
--   `year` (e.g. `x-timeago.strict.unit.year`)
+- `second` (e.g. `x-timeago.strict.unit.second`)
+- `minute` (e.g. `x-timeago.strict.unit.minute`)
+- `hour` (e.g. `x-timeago.strict.unit.hour`)
+- `day` (e.g. `x-timeago.strict.unit.day`)
+- `month` (e.g. `x-timeago.strict.unit.month`)
+- `year` (e.g. `x-timeago.strict.unit.year`)
 
 ##### Adjust rounding method
 
 By default, the values are rounded using the `Math.round` algorithm. If you would like to adjust this, use
 the `x-timeago.rounding.[method]` modifier with one of the following methods:
 
--   `floor` (e.g. `x-timeago.strict.rounding.floor`)
--   `ceil` (e.g. `x-timeago.strict.rounding.ceil`)
--   `floor` (e.g. `x-timeago.strict.rounding.round`)
+- `floor` (e.g. `x-timeago.strict.rounding.floor`)
+- `ceil` (e.g. `x-timeago.strict.rounding.ceil`)
+- `floor` (e.g. `x-timeago.strict.rounding.round`)
 
 ### Magic function
 
@@ -156,28 +153,22 @@ strict" options.
 ##### Default
 
 ```html
-<span
-    x-data="{ date: new Date() }"
-    x-text="$timeago(date, null, null, { strict: true })"
-></span>
+<span x-data="{ date: new Date() }"
+      x-text="$timeago(date, null, null, { strict: true })"></span>
 ```
 
 ##### Unit
 
 ```html
-<span
-    x-data="{ date: new Date() }"
-    x-text="$timeago(date, null, null, { strict: true, unit: 'second' })"
-></span>
+<span x-data="{ date: new Date() }"
+      x-text="$timeago(date, null, null, { strict: true, unit: 'second' })"></span>
 ```
 
 ##### Rounding method
 
 ```html
-<span
-    x-data="{ date: new Date() }"
-    x-text="$timeago(date, null, null, { strict: true, roundingMethod: 'floor' })"
-></span>
+<span x-data="{ date: new Date() }"
+      x-text="$timeago(date, null, null, { strict: true, roundingMethod: 'floor' })"></span>
 ```
 
 ### Other locales
@@ -187,13 +178,11 @@ If you are using the `npm` installation method for this package or the ESM distr
 
 ```javascript
 import TimeAgo from '@marcreichel/alpine-timeago';
-import { de } from 'date-fns/locale';
+import {de} from 'date-fns/locale';
 
-Alpine.plugin(
-    TimeAgo.configure({
-        locale: de,
-    }),
-);
+Alpine.plugin(TimeAgo.configure({
+    locale: de,
+}));
 ```
 
 ## 📄 License
