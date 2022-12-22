@@ -1,10 +1,7 @@
 import { Alpine } from 'alpinejs';
-import {
-    formatDistanceToNow,
-    formatDistanceToNowStrict,
-    Locale,
-    parseISO,
-} from 'date-fns';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import formatDistanceToNowStrict from 'date-fns/formatDistanceToNowStrict';
+import parseISO from 'date-fns/parseISO';
 
 let locale: Locale = null;
 
