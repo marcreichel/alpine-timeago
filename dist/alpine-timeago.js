@@ -3,20 +3,6 @@
   factory();
 })((function () { 'use strict';
 
-  function toInteger(dirtyNumber) {
-    if (dirtyNumber === null || dirtyNumber === true || dirtyNumber === false) {
-      return NaN;
-    }
-
-    var number = Number(dirtyNumber);
-
-    if (isNaN(number)) {
-      return number;
-    }
-
-    return number < 0 ? Math.ceil(number) : Math.floor(number);
-  }
-
   function requiredArgs(required, args) {
     if (args.length < required) {
       throw new TypeError(required + ' argument' + (required > 1 ? 's' : '') + ' required, but only ' + args.length + ' present');
@@ -76,23 +62,6 @@
   }
 
   /**
-   * Google Chrome as of 67.0.3396.87 introduced timezones with offset that includes seconds.
-   * They usually appear for dates that denote time before the timezones were introduced
-   * (e.g. for 'Europe/Prague' timezone the offset is GMT+00:57:44 before 1 October 1891
-   * and GMT+01:00:00 after that date)
-   *
-   * Date#getTimezoneOffset returns the offset in minutes and would return 57 for the example above,
-   * which would lead to incorrect calculations.
-   *
-   * This function returns the timezone offset in milliseconds that takes seconds in account.
-   */
-  function getTimezoneOffsetInMilliseconds(date) {
-    var utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()));
-    utcDate.setUTCFullYear(date.getFullYear());
-    return date.getTime() - utcDate.getTime();
-  }
-
-  /**
    * @name compareAsc
    * @category Common Helpers
    * @summary Compare the two dates and return -1, 0 or 1.
@@ -145,35 +114,6 @@
   }
 
   /**
-   * Days in 1 week.
-   *
-   * @name daysInWeek
-   * @constant
-   * @type {number}
-   * @default
-   */
-  /**
-   * Milliseconds in 1 minute
-   *
-   * @name millisecondsInMinute
-   * @constant
-   * @type {number}
-   * @default
-   */
-
-  var millisecondsInMinute = 60000;
-  /**
-   * Milliseconds in 1 hour
-   *
-   * @name millisecondsInHour
-   * @constant
-   * @type {number}
-   * @default
-   */
-
-  var millisecondsInHour = 3600000;
-
-  /**
    * @name differenceInCalendarMonths
    * @category Month Helpers
    * @summary Get the number of calendar months between the given dates.
@@ -206,52 +146,6 @@
     var yearDiff = dateLeft.getFullYear() - dateRight.getFullYear();
     var monthDiff = dateLeft.getMonth() - dateRight.getMonth();
     return yearDiff * 12 + monthDiff;
-  }
-
-  /**
-   * @name differenceInMilliseconds
-   * @category Millisecond Helpers
-   * @summary Get the number of milliseconds between the given dates.
-   *
-   * @description
-   * Get the number of milliseconds between the given dates.
-   *
-   * ### v2.0.0 breaking changes:
-   *
-   * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
-   *
-   * @param {Date|Number} dateLeft - the later date
-   * @param {Date|Number} dateRight - the earlier date
-   * @returns {Number} the number of milliseconds
-   * @throws {TypeError} 2 arguments required
-   *
-   * @example
-   * // How many milliseconds are between
-   * // 2 July 2014 12:30:20.600 and 2 July 2014 12:30:21.700?
-   * const result = differenceInMilliseconds(
-   *   new Date(2014, 6, 2, 12, 30, 21, 700),
-   *   new Date(2014, 6, 2, 12, 30, 20, 600)
-   * )
-   * //=> 1100
-   */
-
-  function differenceInMilliseconds(dateLeft, dateRight) {
-    requiredArgs(2, arguments);
-    return toDate(dateLeft).getTime() - toDate(dateRight).getTime();
-  }
-
-  var roundingMap = {
-    ceil: Math.ceil,
-    round: Math.round,
-    floor: Math.floor,
-    trunc: function (value) {
-      return value < 0 ? Math.ceil(value) : Math.floor(value);
-    } // Math.trunc is not supported by IE
-
-  };
-  var defaultRoundingMethod = 'trunc';
-  function getRoundingMethod(method) {
-    return method ? roundingMap[method] : roundingMap[defaultRoundingMethod];
   }
 
   /**
@@ -398,6 +292,52 @@
 
 
     return result === 0 ? 0 : result;
+  }
+
+  /**
+   * @name differenceInMilliseconds
+   * @category Millisecond Helpers
+   * @summary Get the number of milliseconds between the given dates.
+   *
+   * @description
+   * Get the number of milliseconds between the given dates.
+   *
+   * ### v2.0.0 breaking changes:
+   *
+   * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
+   *
+   * @param {Date|Number} dateLeft - the later date
+   * @param {Date|Number} dateRight - the earlier date
+   * @returns {Number} the number of milliseconds
+   * @throws {TypeError} 2 arguments required
+   *
+   * @example
+   * // How many milliseconds are between
+   * // 2 July 2014 12:30:20.600 and 2 July 2014 12:30:21.700?
+   * const result = differenceInMilliseconds(
+   *   new Date(2014, 6, 2, 12, 30, 21, 700),
+   *   new Date(2014, 6, 2, 12, 30, 20, 600)
+   * )
+   * //=> 1100
+   */
+
+  function differenceInMilliseconds(dateLeft, dateRight) {
+    requiredArgs(2, arguments);
+    return toDate(dateLeft).getTime() - toDate(dateRight).getTime();
+  }
+
+  var roundingMap = {
+    ceil: Math.ceil,
+    round: Math.round,
+    floor: Math.floor,
+    trunc: function (value) {
+      return value < 0 ? Math.ceil(value) : Math.floor(value);
+    } // Math.trunc is not supported by IE
+
+  };
+  var defaultRoundingMethod = 'trunc';
+  function getRoundingMethod(method) {
+    return method ? roundingMap[method] : roundingMap[defaultRoundingMethod];
   }
 
   /**
@@ -962,6 +902,23 @@
     return assign({}, dirtyObject);
   }
 
+  /**
+   * Google Chrome as of 67.0.3396.87 introduced timezones with offset that includes seconds.
+   * They usually appear for dates that denote time before the timezones were introduced
+   * (e.g. for 'Europe/Prague' timezone the offset is GMT+00:57:44 before 1 October 1891
+   * and GMT+01:00:00 after that date)
+   *
+   * Date#getTimezoneOffset returns the offset in minutes and would return 57 for the example above,
+   * which would lead to incorrect calculations.
+   *
+   * This function returns the timezone offset in milliseconds that takes seconds in account.
+   */
+  function getTimezoneOffsetInMilliseconds(date) {
+    var utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()));
+    utcDate.setUTCFullYear(date.getFullYear());
+    return date.getTime() - utcDate.getTime();
+  }
+
   var MINUTES_IN_DAY$1 = 1440;
   var MINUTES_IN_ALMOST_TWO_DAYS = 2520;
   var MINUTES_IN_MONTH$1 = 43200;
@@ -1166,6 +1123,117 @@
         return locale.formatDistance('almostXYears', years + 1, localizeOptions);
       }
     }
+  }
+
+  /**
+   * @name formatDistanceToNow
+   * @category Common Helpers
+   * @summary Return the distance between the given date and now in words.
+   * @pure false
+   *
+   * @description
+   * Return the distance between the given date and now in words.
+   *
+   * | Distance to now                                                   | Result              |
+   * |-------------------------------------------------------------------|---------------------|
+   * | 0 ... 30 secs                                                     | less than a minute  |
+   * | 30 secs ... 1 min 30 secs                                         | 1 minute            |
+   * | 1 min 30 secs ... 44 mins 30 secs                                 | [2..44] minutes     |
+   * | 44 mins ... 30 secs ... 89 mins 30 secs                           | about 1 hour        |
+   * | 89 mins 30 secs ... 23 hrs 59 mins 30 secs                        | about [2..24] hours |
+   * | 23 hrs 59 mins 30 secs ... 41 hrs 59 mins 30 secs                 | 1 day               |
+   * | 41 hrs 59 mins 30 secs ... 29 days 23 hrs 59 mins 30 secs         | [2..30] days        |
+   * | 29 days 23 hrs 59 mins 30 secs ... 44 days 23 hrs 59 mins 30 secs | about 1 month       |
+   * | 44 days 23 hrs 59 mins 30 secs ... 59 days 23 hrs 59 mins 30 secs | about 2 months      |
+   * | 59 days 23 hrs 59 mins 30 secs ... 1 yr                           | [2..12] months      |
+   * | 1 yr ... 1 yr 3 months                                            | about 1 year        |
+   * | 1 yr 3 months ... 1 yr 9 month s                                  | over 1 year         |
+   * | 1 yr 9 months ... 2 yrs                                           | almost 2 years      |
+   * | N yrs ... N yrs 3 months                                          | about N years       |
+   * | N yrs 3 months ... N yrs 9 months                                 | over N years        |
+   * | N yrs 9 months ... N+1 yrs                                        | almost N+1 years    |
+   *
+   * With `options.includeSeconds == true`:
+   * | Distance to now     | Result               |
+   * |---------------------|----------------------|
+   * | 0 secs ... 5 secs   | less than 5 seconds  |
+   * | 5 secs ... 10 secs  | less than 10 seconds |
+   * | 10 secs ... 20 secs | less than 20 seconds |
+   * | 20 secs ... 40 secs | half a minute        |
+   * | 40 secs ... 60 secs | less than a minute   |
+   * | 60 secs ... 90 secs | 1 minute             |
+   *
+   * > ⚠️ Please note that this function is not present in the FP submodule as
+   * > it uses `Date.now()` internally hence impure and can't be safely curried.
+   *
+   * ### v2.0.0 breaking changes:
+   *
+   * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
+   *
+   * - The function was renamed from `distanceInWordsToNow ` to `formatDistanceToNow`
+   *   to make its name consistent with `format` and `formatRelative`.
+   *
+   *   ```javascript
+   *   // Before v2.0.0
+   *
+   *   distanceInWordsToNow(new Date(2014, 6, 2), { addSuffix: true })
+   *   //=> 'in 6 months'
+   *
+   *   // v2.0.0 onward
+   *
+   *   formatDistanceToNow(new Date(2014, 6, 2), { addSuffix: true })
+   *   //=> 'in 6 months'
+   *   ```
+   *
+   * @param {Date|Number} date - the given date
+   * @param {Object} [options] - the object with options
+   * @param {Boolean} [options.includeSeconds=false] - distances less than a minute are more detailed
+   * @param {Boolean} [options.addSuffix=false] - result specifies if now is earlier or later than the passed date
+   * @param {Locale} [options.locale=defaultLocale] - the locale object. See [Locale]{@link https://date-fns.org/docs/Locale}
+   * @returns {String} the distance in words
+   * @throws {TypeError} 1 argument required
+   * @throws {RangeError} `date` must not be Invalid Date
+   * @throws {RangeError} `options.locale` must contain `formatDistance` property
+   *
+   * @example
+   * // If today is 1 January 2015, what is the distance to 2 July 2014?
+   * var result = formatDistanceToNow(
+   *   new Date(2014, 6, 2)
+   * )
+   * //=> '6 months'
+   *
+   * @example
+   * // If now is 1 January 2015 00:00:00,
+   * // what is the distance to 1 January 2015 00:00:15, including seconds?
+   * var result = formatDistanceToNow(
+   *   new Date(2015, 0, 1, 0, 0, 15),
+   *   {includeSeconds: true}
+   * )
+   * //=> 'less than 20 seconds'
+   *
+   * @example
+   * // If today is 1 January 2015,
+   * // what is the distance to 1 January 2016, with a suffix?
+   * var result = formatDistanceToNow(
+   *   new Date(2016, 0, 1),
+   *   {addSuffix: true}
+   * )
+   * //=> 'in about 1 year'
+   *
+   * @example
+   * // If today is 1 January 2015,
+   * // what is the distance to 1 August 2016 in Esperanto?
+   * var eoLocale = require('date-fns/locale/eo')
+   * var result = formatDistanceToNow(
+   *   new Date(2016, 7, 1),
+   *   {locale: eoLocale}
+   * )
+   * //=> 'pli ol 1 jaro'
+   */
+
+  function formatDistanceToNow(dirtyDate, dirtyOptions) {
+    requiredArgs(1, arguments);
+    return formatDistance(dirtyDate, Date.now(), dirtyOptions);
   }
 
   var MILLISECONDS_IN_MINUTE = 1000 * 60;
@@ -1416,117 +1484,6 @@
   }
 
   /**
-   * @name formatDistanceToNow
-   * @category Common Helpers
-   * @summary Return the distance between the given date and now in words.
-   * @pure false
-   *
-   * @description
-   * Return the distance between the given date and now in words.
-   *
-   * | Distance to now                                                   | Result              |
-   * |-------------------------------------------------------------------|---------------------|
-   * | 0 ... 30 secs                                                     | less than a minute  |
-   * | 30 secs ... 1 min 30 secs                                         | 1 minute            |
-   * | 1 min 30 secs ... 44 mins 30 secs                                 | [2..44] minutes     |
-   * | 44 mins ... 30 secs ... 89 mins 30 secs                           | about 1 hour        |
-   * | 89 mins 30 secs ... 23 hrs 59 mins 30 secs                        | about [2..24] hours |
-   * | 23 hrs 59 mins 30 secs ... 41 hrs 59 mins 30 secs                 | 1 day               |
-   * | 41 hrs 59 mins 30 secs ... 29 days 23 hrs 59 mins 30 secs         | [2..30] days        |
-   * | 29 days 23 hrs 59 mins 30 secs ... 44 days 23 hrs 59 mins 30 secs | about 1 month       |
-   * | 44 days 23 hrs 59 mins 30 secs ... 59 days 23 hrs 59 mins 30 secs | about 2 months      |
-   * | 59 days 23 hrs 59 mins 30 secs ... 1 yr                           | [2..12] months      |
-   * | 1 yr ... 1 yr 3 months                                            | about 1 year        |
-   * | 1 yr 3 months ... 1 yr 9 month s                                  | over 1 year         |
-   * | 1 yr 9 months ... 2 yrs                                           | almost 2 years      |
-   * | N yrs ... N yrs 3 months                                          | about N years       |
-   * | N yrs 3 months ... N yrs 9 months                                 | over N years        |
-   * | N yrs 9 months ... N+1 yrs                                        | almost N+1 years    |
-   *
-   * With `options.includeSeconds == true`:
-   * | Distance to now     | Result               |
-   * |---------------------|----------------------|
-   * | 0 secs ... 5 secs   | less than 5 seconds  |
-   * | 5 secs ... 10 secs  | less than 10 seconds |
-   * | 10 secs ... 20 secs | less than 20 seconds |
-   * | 20 secs ... 40 secs | half a minute        |
-   * | 40 secs ... 60 secs | less than a minute   |
-   * | 60 secs ... 90 secs | 1 minute             |
-   *
-   * > ⚠️ Please note that this function is not present in the FP submodule as
-   * > it uses `Date.now()` internally hence impure and can't be safely curried.
-   *
-   * ### v2.0.0 breaking changes:
-   *
-   * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
-   *
-   * - The function was renamed from `distanceInWordsToNow ` to `formatDistanceToNow`
-   *   to make its name consistent with `format` and `formatRelative`.
-   *
-   *   ```javascript
-   *   // Before v2.0.0
-   *
-   *   distanceInWordsToNow(new Date(2014, 6, 2), { addSuffix: true })
-   *   //=> 'in 6 months'
-   *
-   *   // v2.0.0 onward
-   *
-   *   formatDistanceToNow(new Date(2014, 6, 2), { addSuffix: true })
-   *   //=> 'in 6 months'
-   *   ```
-   *
-   * @param {Date|Number} date - the given date
-   * @param {Object} [options] - the object with options
-   * @param {Boolean} [options.includeSeconds=false] - distances less than a minute are more detailed
-   * @param {Boolean} [options.addSuffix=false] - result specifies if now is earlier or later than the passed date
-   * @param {Locale} [options.locale=defaultLocale] - the locale object. See [Locale]{@link https://date-fns.org/docs/Locale}
-   * @returns {String} the distance in words
-   * @throws {TypeError} 1 argument required
-   * @throws {RangeError} `date` must not be Invalid Date
-   * @throws {RangeError} `options.locale` must contain `formatDistance` property
-   *
-   * @example
-   * // If today is 1 January 2015, what is the distance to 2 July 2014?
-   * var result = formatDistanceToNow(
-   *   new Date(2014, 6, 2)
-   * )
-   * //=> '6 months'
-   *
-   * @example
-   * // If now is 1 January 2015 00:00:00,
-   * // what is the distance to 1 January 2015 00:00:15, including seconds?
-   * var result = formatDistanceToNow(
-   *   new Date(2015, 0, 1, 0, 0, 15),
-   *   {includeSeconds: true}
-   * )
-   * //=> 'less than 20 seconds'
-   *
-   * @example
-   * // If today is 1 January 2015,
-   * // what is the distance to 1 January 2016, with a suffix?
-   * var result = formatDistanceToNow(
-   *   new Date(2016, 0, 1),
-   *   {addSuffix: true}
-   * )
-   * //=> 'in about 1 year'
-   *
-   * @example
-   * // If today is 1 January 2015,
-   * // what is the distance to 1 August 2016 in Esperanto?
-   * var eoLocale = require('date-fns/locale/eo')
-   * var result = formatDistanceToNow(
-   *   new Date(2016, 7, 1),
-   *   {locale: eoLocale}
-   * )
-   * //=> 'pli ol 1 jaro'
-   */
-
-  function formatDistanceToNow(dirtyDate, dirtyOptions) {
-    requiredArgs(1, arguments);
-    return formatDistance(dirtyDate, Date.now(), dirtyOptions);
-  }
-
-  /**
    * @name formatDistanceToNowStrict
    * @category Common Helpers
    * @summary Return the distance between the given date and now in words.
@@ -1604,6 +1561,49 @@
   function formatDistanceToNowStrict(dirtyDate, dirtyOptions) {
     requiredArgs(1, arguments);
     return formatDistanceStrict(dirtyDate, Date.now(), dirtyOptions);
+  }
+
+  /**
+   * Days in 1 week.
+   *
+   * @name daysInWeek
+   * @constant
+   * @type {number}
+   * @default
+   */
+  /**
+   * Milliseconds in 1 minute
+   *
+   * @name millisecondsInMinute
+   * @constant
+   * @type {number}
+   * @default
+   */
+
+  var millisecondsInMinute = 60000;
+  /**
+   * Milliseconds in 1 hour
+   *
+   * @name millisecondsInHour
+   * @constant
+   * @type {number}
+   * @default
+   */
+
+  var millisecondsInHour = 3600000;
+
+  function toInteger(dirtyNumber) {
+    if (dirtyNumber === null || dirtyNumber === true || dirtyNumber === false) {
+      return NaN;
+    }
+
+    var number = Number(dirtyNumber);
+
+    if (isNaN(number)) {
+      return number;
+    }
+
+    return number < 0 ? Math.ceil(number) : Math.floor(number);
   }
 
   /**
@@ -1897,7 +1897,7 @@
   let locale = null;
 
   function TimeAgo(Alpine) {
-    Alpine.directive('timeago', (el, {
+    Alpine.directive("timeago", (el, {
       expression,
       modifiers
     }, {
@@ -1909,29 +1909,29 @@
 
       const render = date => {
         try {
-          if (modifiers.includes('strict')) {
-            let unit = modifiers.includes('unit') ? modifiers[modifiers.findIndex(modifier => modifier === 'unit') + 1] || undefined : undefined;
+          if (modifiers.includes("strict")) {
+            let unit = modifiers.includes("unit") ? modifiers[modifiers.findIndex(modifier => modifier === "unit") + 1] || undefined : undefined;
 
-            if (!['second', 'minute', 'hour', 'day', 'month', 'year'].includes(unit)) {
+            if (!["second", "minute", "hour", "day", "month", "year"].includes(unit)) {
               unit = undefined;
             }
 
-            let roundingMethod = modifiers.includes('rounding') ? modifiers[modifiers.findIndex(modifier => modifier === 'rounding') + 1] || undefined : undefined;
+            let roundingMethod = modifiers.includes("rounding") ? modifiers[modifiers.findIndex(modifier => modifier === "rounding") + 1] || undefined : undefined;
 
-            if (!['floor', 'ceil', 'round'].includes(roundingMethod)) {
+            if (!["floor", "ceil", "round"].includes(roundingMethod)) {
               roundingMethod = undefined;
             }
 
             el.textContent = formatDistanceToNowStrict(date, {
-              addSuffix: !modifiers.includes('pure'),
+              addSuffix: !modifiers.includes("pure"),
               unit,
               roundingMethod,
               locale
             });
           } else {
             el.textContent = formatDistanceToNow(date, {
-              addSuffix: !modifiers.includes('pure'),
-              includeSeconds: modifiers.includes('seconds'),
+              addSuffix: !modifiers.includes("pure"),
+              includeSeconds: modifiers.includes("seconds"),
               locale
             });
           }
@@ -1947,14 +1947,14 @@
             clearInterval(interval);
           }
 
-          if (typeof date === 'string') {
+          if (typeof date === "string") {
             date = parseISO(date);
           }
 
           render(date);
           let intervalDuration = 30000;
 
-          if (modifiers.includes('seconds')) {
+          if (modifiers.includes("seconds")) {
             intervalDuration = 5000;
           }
 
@@ -1965,7 +1965,7 @@
       });
       cleanup(() => clearInterval(interval));
     });
-    Alpine.magic('timeago', () => (expression, pure, seconds, strictOptions) => {
+    Alpine.magic("timeago", () => (expression, pure, seconds, strictOptions) => {
       if (pure == null) {
         pure = false;
       }
@@ -1974,11 +1974,11 @@
         seconds = false;
       }
 
-      if (strictOptions != null && (strictOptions['strict'] || undefined)) {
+      if (strictOptions != null && (strictOptions["strict"] || undefined)) {
         return formatDistanceToNowStrict(expression, {
           addSuffix: !pure,
-          unit: strictOptions['unit'] || undefined,
-          roundingMethod: strictOptions['roundingMethod'] || undefined,
+          unit: strictOptions["unit"] || undefined,
+          roundingMethod: strictOptions["roundingMethod"] || undefined,
           locale
         });
       }
@@ -1992,8 +1992,8 @@
   }
 
   TimeAgo.configure = config => {
-    if (config.hasOwnProperty('locale') && typeof config.locale === 'object') {
-      if (config.locale.hasOwnProperty('formatDistance')) {
+    if (config.hasOwnProperty("locale") && typeof config.locale === "object") {
+      if (config.locale.hasOwnProperty("formatDistance")) {
         locale = config.locale;
       }
     }
