@@ -1935,6 +1935,10 @@
               locale
             });
           }
+
+          el.dispatchEvent(new Event("timeago:update", {
+            bubbles: false
+          }));
         } catch (e) {
           console.error(e);
         }
