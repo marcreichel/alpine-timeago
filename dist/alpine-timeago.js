@@ -1908,6 +1908,10 @@
       let evaluateDate = evaluateLater(expression);
 
       const render = date => {
+        if (typeof date === "string") {
+          date = parseISO(date);
+        }
+
         try {
           if (modifiers.includes("strict")) {
             let unit = modifiers.includes("unit") ? modifiers[modifiers.findIndex(modifier => modifier === "unit") + 1] || undefined : undefined;
@@ -1945,26 +1949,47 @@
       };
 
       let interval;
+
+      const setupInterval = date => {
+        let intervalDuration = 30000;
+
+        if (modifiers.includes("seconds")) {
+          intervalDuration = 5000;
+        }
+
+        interval = setInterval(() => {
+          render(date);
+        }, intervalDuration);
+      };
+
+      const intersectionObserver = new IntersectionObserver(entries => {
+        const [entry] = entries;
+        const {
+          isIntersecting
+        } = entry;
+
+        if (isIntersecting) {
+          evaluateDate(date => {
+            if (!interval) {
+              setupInterval(date);
+              render(date);
+            }
+          });
+        } else {
+          if (interval) {
+            clearInterval(interval);
+            interval = undefined;
+          }
+        }
+      });
+      intersectionObserver.observe(el);
       effect(() => {
         evaluateDate(date => {
           if (interval) {
             clearInterval(interval);
           }
 
-          if (typeof date === "string") {
-            date = parseISO(date);
-          }
-
           render(date);
-          let intervalDuration = 30000;
-
-          if (modifiers.includes("seconds")) {
-            intervalDuration = 5000;
-          }
-
-          interval = setInterval(() => {
-            render(date);
-          }, intervalDuration);
         });
       });
       cleanup(() => clearInterval(interval));
