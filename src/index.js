@@ -1,6 +1,7 @@
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import parseISO from "date-fns/parseISO";
+import isPast from "date-fns/isPast";
 
 let locale = null;
 
@@ -50,13 +51,18 @@ function TimeAgo(Alpine) {
               locale,
             });
           }
-          el.dispatchEvent(new Event("timeago:update", { bubbles: false }));
+
+          dispatch(date);
         } catch (e) {
           console.error(e);
         }
       };
 
       let interval;
+
+      const dispatch = (date) => {
+        el.dispatchEvent(new CustomEvent("timeago:render", { detail: { isPast: isPast(date) }, bubbles: false }));
+      };
 
       const setupInterval = (date) => {
         let intervalDuration = 30000;
@@ -96,6 +102,8 @@ function TimeAgo(Alpine) {
           }
 
           render(date);
+
+          setupInterval(date);
         });
       });
 
