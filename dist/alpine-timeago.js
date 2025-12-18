@@ -4,184 +4,6 @@
 })((function () { 'use strict';
 
   /**
-   * @name constructFrom
-   * @category Generic Helpers
-   * @summary Constructs a date using the reference date and the value
-   *
-   * @description
-   * The function constructs a new date using the constructor from the reference
-   * date and the given value. It helps to build generic functions that accept
-   * date extensions.
-   *
-   * It defaults to `Date` if the passed reference date is a number or a string.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param date - The reference date to take constructor from
-   * @param value - The value to create the date
-   *
-   * @returns Date initialized using the given date and value
-   *
-   * @example
-   * import { constructFrom } from 'date-fns'
-   *
-   * // A function that clones a date preserving the original type
-   * function cloneDate<DateType extends Date(date: DateType): DateType {
-   *   return constructFrom(
-   *     date, // Use contrustor from the given date
-   *     date.getTime() // Use the date value to create a new date
-   *   )
-   * }
-   */
-  function constructFrom(date, value) {
-    if (date instanceof Date) {
-      return new date.constructor(value);
-    } else {
-      return new Date(value);
-    }
-  }
-
-  /**
-   * @name constructNow
-   * @category Generic Helpers
-   * @summary Constructs a new current date using the passed value constructor.
-   * @pure false
-   *
-   * @description
-   * The function constructs a new current date using the constructor from
-   * the reference date. It helps to build generic functions that accept date
-   * extensions and use the current date.
-   *
-   * It defaults to `Date` if the passed reference date is a number or a string.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param date - The reference date to take constructor from
-   *
-   * @returns Current date initialized using the given date constructor
-   *
-   * @example
-   * import { constructNow, isSameDay } from 'date-fns'
-   *
-   * function isToday<DateType extends Date>(
-   *   date: DateType | number | string,
-   * ): boolean {
-   *   // If we were to use `new Date()` directly, the function would  behave
-   *   // differently in different timezones and return false for the same date.
-   *   return isSameDay(date, constructNow(date));
-   * }
-   */
-  function constructNow(date) {
-    return constructFrom(date, Date.now());
-  }
-
-  /**
-   * @name toDate
-   * @category Common Helpers
-   * @summary Convert the given argument to an instance of Date.
-   *
-   * @description
-   * Convert the given argument to an instance of Date.
-   *
-   * If the argument is an instance of Date, the function returns its clone.
-   *
-   * If the argument is a number, it is treated as a timestamp.
-   *
-   * If the argument is none of the above, the function returns Invalid Date.
-   *
-   * **Note**: *all* Date arguments passed to any *date-fns* function is processed by `toDate`.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param argument - The value to convert
-   *
-   * @returns The parsed date in the local time zone
-   *
-   * @example
-   * // Clone the date:
-   * const result = toDate(new Date(2014, 1, 11, 11, 30, 30))
-   * //=> Tue Feb 11 2014 11:30:30
-   *
-   * @example
-   * // Convert the timestamp to date:
-   * const result = toDate(1392098430000)
-   * //=> Tue Feb 11 2014 11:30:30
-   */
-  function toDate(argument) {
-    const argStr = Object.prototype.toString.call(argument);
-
-    // Clone the date
-    if (
-      argument instanceof Date ||
-      (typeof argument === "object" && argStr === "[object Date]")
-    ) {
-      // Prevent the date to lose the milliseconds when passed to new Date() in IE10
-      return new argument.constructor(+argument);
-    } else if (
-      typeof argument === "number" ||
-      argStr === "[object Number]" ||
-      typeof argument === "string" ||
-      argStr === "[object String]"
-    ) {
-      // TODO: Can we get rid of as?
-      return new Date(argument);
-    } else {
-      // TODO: Can we get rid of as?
-      return new Date(NaN);
-    }
-  }
-
-  /**
-   * @name compareAsc
-   * @category Common Helpers
-   * @summary Compare the two dates and return -1, 0 or 1.
-   *
-   * @description
-   * Compare the two dates and return 1 if the first date is after the second,
-   * -1 if the first date is before the second or 0 if dates are equal.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param dateLeft - The first date to compare
-   * @param dateRight - The second date to compare
-   *
-   * @returns The result of the comparison
-   *
-   * @example
-   * // Compare 11 February 1987 and 10 July 1989:
-   * const result = compareAsc(new Date(1987, 1, 11), new Date(1989, 6, 10))
-   * //=> -1
-   *
-   * @example
-   * // Sort the array of dates:
-   * const result = [
-   *   new Date(1995, 6, 2),
-   *   new Date(1987, 1, 11),
-   *   new Date(1989, 6, 10)
-   * ].sort(compareAsc)
-   * //=> [
-   * //   Wed Feb 11 1987 00:00:00,
-   * //   Mon Jul 10 1989 00:00:00,
-   * //   Sun Jul 02 1995 00:00:00
-   * // ]
-   */
-  function compareAsc(dateLeft, dateRight) {
-    const _dateLeft = toDate(dateLeft);
-    const _dateRight = toDate(dateRight);
-
-    const diff = _dateLeft.getTime() - _dateRight.getTime();
-
-    if (diff < 0) {
-      return -1;
-    } else if (diff > 0) {
-      return 1;
-      // Return 0 if diff is 0; return NaN if diff is NaN
-    } else {
-      return diff;
-    }
-  }
-
-  /**
    * @module constants
    * @summary Useful constants
    * @description
@@ -234,247 +56,94 @@
   const minutesInDay = 1440;
 
   /**
-   * @name differenceInCalendarMonths
-   * @category Month Helpers
-   * @summary Get the number of calendar months between the given dates.
+   * @constant
+   * @name constructFromSymbol
+   * @summary Symbol enabling Date extensions to inherit properties from the reference date.
+   *
+   * The symbol is used to enable the `constructFrom` function to construct a date
+   * using a reference date and a value. It allows to transfer extra properties
+   * from the reference date to the new date. It's useful for extensions like
+   * [`TZDate`](https://github.com/date-fns/tz) that accept a time zone as
+   * a constructor argument.
+   */
+  const constructFromSymbol = Symbol.for("constructDateFrom");
+
+  /**
+   * @name constructFrom
+   * @category Generic Helpers
+   * @summary Constructs a date using the reference date and the value
    *
    * @description
-   * Get the number of calendar months between the given dates.
+   * The function constructs a new date using the constructor from the reference
+   * date and the given value. It helps to build generic functions that accept
+   * date extensions.
+   *
+   * It defaults to `Date` if the passed reference date is a number or a string.
+   *
+   * Starting from v3.7.0, it allows to construct a date using `[Symbol.for("constructDateFrom")]`
+   * enabling to transfer extra properties from the reference date to the new date.
+   * It's useful for extensions like [`TZDate`](https://github.com/date-fns/tz)
+   * that accept a time zone as a constructor argument.
    *
    * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
    *
-   * @param dateLeft - The later date
-   * @param dateRight - The earlier date
+   * @param date - The reference date to take constructor from
+   * @param value - The value to create the date
    *
-   * @returns The number of calendar months
+   * @returns Date initialized using the given date and value
    *
    * @example
-   * // How many calendar months are between 31 January 2014 and 1 September 2014?
-   * const result = differenceInCalendarMonths(
-   *   new Date(2014, 8, 1),
-   *   new Date(2014, 0, 31)
-   * )
-   * //=> 8
+   * import { constructFrom } from "./constructFrom/date-fns";
+   *
+   * // A function that clones a date preserving the original type
+   * function cloneDate<DateType extends Date>(date: DateType): DateType {
+   *   return constructFrom(
+   *     date, // Use constructor from the given date
+   *     date.getTime() // Use the date value to create a new date
+   *   );
+   * }
    */
-  function differenceInCalendarMonths(dateLeft, dateRight) {
-    const _dateLeft = toDate(dateLeft);
-    const _dateRight = toDate(dateRight);
+  function constructFrom(date, value) {
+    if (typeof date === "function") return date(value);
 
-    const yearDiff = _dateLeft.getFullYear() - _dateRight.getFullYear();
-    const monthDiff = _dateLeft.getMonth() - _dateRight.getMonth();
+    if (date && typeof date === "object" && constructFromSymbol in date)
+      return date[constructFromSymbol](value);
 
-    return yearDiff * 12 + monthDiff;
+    if (date instanceof Date) return new date.constructor(value);
+
+    return new Date(value);
   }
 
   /**
-   * @name endOfDay
-   * @category Day Helpers
-   * @summary Return the end of a day for the given date.
+   * @name constructNow
+   * @category Generic Helpers
+   * @summary Constructs a new current date using the passed value constructor.
+   * @pure false
    *
    * @description
-   * Return the end of a day for the given date.
-   * The result will be in the local timezone.
+   * The function constructs a new current date using the constructor from
+   * the reference date. It helps to build generic functions that accept date
+   * extensions and use the current date.
    *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+   * It defaults to `Date` if the passed reference date is a number or a string.
    *
-   * @param date - The original date
+   * @param date - The reference date to take constructor from
    *
-   * @returns The end of a day
-   *
-   * @example
-   * // The end of a day for 2 September 2014 11:55:00:
-   * const result = endOfDay(new Date(2014, 8, 2, 11, 55, 0))
-   * //=> Tue Sep 02 2014 23:59:59.999
-   */
-  function endOfDay(date) {
-    const _date = toDate(date);
-    _date.setHours(23, 59, 59, 999);
-    return _date;
-  }
-
-  /**
-   * @name endOfMonth
-   * @category Month Helpers
-   * @summary Return the end of a month for the given date.
-   *
-   * @description
-   * Return the end of a month for the given date.
-   * The result will be in the local timezone.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param date - The original date
-   *
-   * @returns The end of a month
+   * @returns Current date initialized using the given date constructor
    *
    * @example
-   * // The end of a month for 2 September 2014 11:55:00:
-   * const result = endOfMonth(new Date(2014, 8, 2, 11, 55, 0))
-   * //=> Tue Sep 30 2014 23:59:59.999
+   * import { constructNow, isSameDay } from 'date-fns'
+   *
+   * function isToday<DateType extends Date>(
+   *   date: DateArg<DateType>,
+   * ): boolean {
+   *   // If we were to use `new Date()` directly, the function would  behave
+   *   // differently in different timezones and return false for the same date.
+   *   return isSameDay(date, constructNow(date));
+   * }
    */
-  function endOfMonth(date) {
-    const _date = toDate(date);
-    const month = _date.getMonth();
-    _date.setFullYear(_date.getFullYear(), month + 1, 0);
-    _date.setHours(23, 59, 59, 999);
-    return _date;
-  }
-
-  /**
-   * @name isLastDayOfMonth
-   * @category Month Helpers
-   * @summary Is the given date the last day of a month?
-   *
-   * @description
-   * Is the given date the last day of a month?
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param date - The date to check
-
-   * @returns The date is the last day of a month
-   *
-   * @example
-   * // Is 28 February 2014 the last day of a month?
-   * const result = isLastDayOfMonth(new Date(2014, 1, 28))
-   * //=> true
-   */
-  function isLastDayOfMonth(date) {
-    const _date = toDate(date);
-    return +endOfDay(_date) === +endOfMonth(_date);
-  }
-
-  /**
-   * @name differenceInMonths
-   * @category Month Helpers
-   * @summary Get the number of full months between the given dates.
-   *
-   * @description
-   * Get the number of full months between the given dates using trunc as a default rounding method.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param dateLeft - The later date
-   * @param dateRight - The earlier date
-   *
-   * @returns The number of full months
-   *
-   * @example
-   * // How many full months are between 31 January 2014 and 1 September 2014?
-   * const result = differenceInMonths(new Date(2014, 8, 1), new Date(2014, 0, 31))
-   * //=> 7
-   */
-  function differenceInMonths(dateLeft, dateRight) {
-    const _dateLeft = toDate(dateLeft);
-    const _dateRight = toDate(dateRight);
-
-    const sign = compareAsc(_dateLeft, _dateRight);
-    const difference = Math.abs(
-      differenceInCalendarMonths(_dateLeft, _dateRight),
-    );
-    let result;
-
-    // Check for the difference of less than month
-    if (difference < 1) {
-      result = 0;
-    } else {
-      if (_dateLeft.getMonth() === 1 && _dateLeft.getDate() > 27) {
-        // This will check if the date is end of Feb and assign a higher end of month date
-        // to compare it with Jan
-        _dateLeft.setDate(30);
-      }
-
-      _dateLeft.setMonth(_dateLeft.getMonth() - sign * difference);
-
-      // Math.abs(diff in full months - diff in calendar months) === 1 if last calendar month is not full
-      // If so, result must be decreased by 1 in absolute value
-      let isLastMonthNotFull = compareAsc(_dateLeft, _dateRight) === -sign;
-
-      // Check for cases of one full calendar month
-      if (
-        isLastDayOfMonth(toDate(dateLeft)) &&
-        difference === 1 &&
-        compareAsc(dateLeft, _dateRight) === 1
-      ) {
-        isLastMonthNotFull = false;
-      }
-
-      result = sign * (difference - Number(isLastMonthNotFull));
-    }
-
-    // Prevent negative zero
-    return result === 0 ? 0 : result;
-  }
-
-  function getRoundingMethod(method) {
-    return (number) => {
-      const round = method ? Math[method] : Math.trunc;
-      const result = round(number);
-      // Prevent negative zero
-      return result === 0 ? 0 : result;
-    };
-  }
-
-  /**
-   * @name differenceInMilliseconds
-   * @category Millisecond Helpers
-   * @summary Get the number of milliseconds between the given dates.
-   *
-   * @description
-   * Get the number of milliseconds between the given dates.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param dateLeft - The later date
-   * @param dateRight - The earlier date
-   *
-   * @returns The number of milliseconds
-   *
-   * @example
-   * // How many milliseconds are between
-   * // 2 July 2014 12:30:20.600 and 2 July 2014 12:30:21.700?
-   * const result = differenceInMilliseconds(
-   *   new Date(2014, 6, 2, 12, 30, 21, 700),
-   *   new Date(2014, 6, 2, 12, 30, 20, 600)
-   * )
-   * //=> 1100
-   */
-  function differenceInMilliseconds(dateLeft, dateRight) {
-    return +toDate(dateLeft) - +toDate(dateRight);
-  }
-
-  /**
-   * The {@link differenceInSeconds} function options.
-   */
-
-  /**
-   * @name differenceInSeconds
-   * @category Second Helpers
-   * @summary Get the number of seconds between the given dates.
-   *
-   * @description
-   * Get the number of seconds between the given dates.
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param dateLeft - The later date
-   * @param dateRight - The earlier date
-   * @param options - An object with options.
-   *
-   * @returns The number of seconds
-   *
-   * @example
-   * // How many seconds are between
-   * // 2 July 2014 12:30:07.999 and 2 July 2014 12:30:20.000?
-   * const result = differenceInSeconds(
-   *   new Date(2014, 6, 2, 12, 30, 20, 0),
-   *   new Date(2014, 6, 2, 12, 30, 7, 999)
-   * )
-   * //=> 12
-   */
-  function differenceInSeconds(dateLeft, dateRight, options) {
-    const diff = differenceInMilliseconds(dateLeft, dateRight) / 1000;
-    return getRoundingMethod(options?.roundingMethod)(diff);
+  function constructNow(date) {
+    return constructFrom(date, Date.now());
   }
 
   const formatDistanceLocale = {
@@ -637,8 +306,6 @@
 
   const formatRelative = (token, _date, _baseDate, _options) =>
     formatRelativeLocale[token];
-
-  /* eslint-disable no-unused-vars */
 
   /**
    * The localize function argument callback which allows to convert raw value to
@@ -909,14 +576,14 @@
 
       const key = Array.isArray(parsePatterns)
         ? findIndex(parsePatterns, (pattern) => pattern.test(matchedString))
-        : // eslint-disable-next-line @typescript-eslint/no-explicit-any -- I challange you to fix the type
+        : // [TODO] -- I challenge you to fix the type
           findKey(parsePatterns, (pattern) => pattern.test(matchedString));
 
       let value;
 
       value = args.valueCallback ? args.valueCallback(key) : key;
       value = options.valueCallback
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any -- I challange you to fix the type
+        ? // [TODO] -- I challenge you to fix the type
           options.valueCallback(value)
         : value;
 
@@ -959,7 +626,7 @@
         ? args.valueCallback(parseResult[0])
         : parseResult[0];
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- I challange you to fix the type
+      // [TODO] I challenge you to fix the type
       value = options.valueCallback ? options.valueCallback(value) : value;
 
       const rest = string.slice(matchedString.length);
@@ -1126,6 +793,49 @@
   }
 
   /**
+   * @name toDate
+   * @category Common Helpers
+   * @summary Convert the given argument to an instance of Date.
+   *
+   * @description
+   * Convert the given argument to an instance of Date.
+   *
+   * If the argument is an instance of Date, the function returns its clone.
+   *
+   * If the argument is a number, it is treated as a timestamp.
+   *
+   * If the argument is none of the above, the function returns Invalid Date.
+   *
+   * Starting from v3.7.0, it clones a date using `[Symbol.for("constructDateFrom")]`
+   * enabling to transfer extra properties from the reference date to the new date.
+   * It's useful for extensions like [`TZDate`](https://github.com/date-fns/tz)
+   * that accept a time zone as a constructor argument.
+   *
+   * **Note**: *all* Date arguments passed to any *date-fns* function is processed by `toDate`.
+   *
+   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+   * @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+   *
+   * @param argument - The value to convert
+   *
+   * @returns The parsed date in the local time zone
+   *
+   * @example
+   * // Clone the date:
+   * const result = toDate(new Date(2014, 1, 11, 11, 30, 30))
+   * //=> Tue Feb 11 2014 11:30:30
+   *
+   * @example
+   * // Convert the timestamp to date:
+   * const result = toDate(1392098430000)
+   * //=> Tue Feb 11 2014 11:30:30
+   */
+  function toDate(argument, context) {
+    // [TODO] Get rid of `toDate` or `constructFrom`?
+    return constructFrom(context || argument, argument);
+  }
+
+  /**
    * Google Chrome as of 67.0.3396.87 introduced timezones with offset that includes seconds.
    * They usually appear for dates that denote time before the timezones were introduced
    * (e.g. for 'Europe/Prague' timezone the offset is GMT+00:57:44 before 1 October 1891
@@ -1151,6 +861,305 @@
     );
     utcDate.setUTCFullYear(_date.getFullYear());
     return +date - +utcDate;
+  }
+
+  function normalizeDates(context, ...dates) {
+    const normalize = constructFrom.bind(
+      null,
+      context || dates.find((date) => typeof date === "object"),
+    );
+    return dates.map(normalize);
+  }
+
+  /**
+   * @name compareAsc
+   * @category Common Helpers
+   * @summary Compare the two dates and return -1, 0 or 1.
+   *
+   * @description
+   * Compare the two dates and return 1 if the first date is after the second,
+   * -1 if the first date is before the second or 0 if dates are equal.
+   *
+   * @param dateLeft - The first date to compare
+   * @param dateRight - The second date to compare
+   *
+   * @returns The result of the comparison
+   *
+   * @example
+   * // Compare 11 February 1987 and 10 July 1989:
+   * const result = compareAsc(new Date(1987, 1, 11), new Date(1989, 6, 10))
+   * //=> -1
+   *
+   * @example
+   * // Sort the array of dates:
+   * const result = [
+   *   new Date(1995, 6, 2),
+   *   new Date(1987, 1, 11),
+   *   new Date(1989, 6, 10)
+   * ].sort(compareAsc)
+   * //=> [
+   * //   Wed Feb 11 1987 00:00:00,
+   * //   Mon Jul 10 1989 00:00:00,
+   * //   Sun Jul 02 1995 00:00:00
+   * // ]
+   */
+  function compareAsc(dateLeft, dateRight) {
+    const diff = +toDate(dateLeft) - +toDate(dateRight);
+
+    if (diff < 0) return -1;
+    else if (diff > 0) return 1;
+
+    // Return 0 if diff is 0; return NaN if diff is NaN
+    return diff;
+  }
+
+  /**
+   * The {@link differenceInCalendarMonths} function options.
+   */
+
+  /**
+   * @name differenceInCalendarMonths
+   * @category Month Helpers
+   * @summary Get the number of calendar months between the given dates.
+   *
+   * @description
+   * Get the number of calendar months between the given dates.
+   *
+   * @param laterDate - The later date
+   * @param earlierDate - The earlier date
+   * @param options - An object with options
+   *
+   * @returns The number of calendar months
+   *
+   * @example
+   * // How many calendar months are between 31 January 2014 and 1 September 2014?
+   * const result = differenceInCalendarMonths(
+   *   new Date(2014, 8, 1),
+   *   new Date(2014, 0, 31)
+   * )
+   * //=> 8
+   */
+  function differenceInCalendarMonths(laterDate, earlierDate, options) {
+    const [laterDate_, earlierDate_] = normalizeDates(
+      options?.in,
+      laterDate,
+      earlierDate,
+    );
+
+    const yearsDiff = laterDate_.getFullYear() - earlierDate_.getFullYear();
+    const monthsDiff = laterDate_.getMonth() - earlierDate_.getMonth();
+
+    return yearsDiff * 12 + monthsDiff;
+  }
+
+  /**
+   * The {@link endOfDay} function options.
+   */
+
+  /**
+   * @name endOfDay
+   * @category Day Helpers
+   * @summary Return the end of a day for the given date.
+   *
+   * @description
+   * Return the end of a day for the given date.
+   * The result will be in the local timezone.
+   *
+   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+   * @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+   *
+   * @param date - The original date
+   * @param options - An object with options
+   *
+   * @returns The end of a day
+   *
+   * @example
+   * // The end of a day for 2 September 2014 11:55:00:
+   * const result = endOfDay(new Date(2014, 8, 2, 11, 55, 0))
+   * //=> Tue Sep 02 2014 23:59:59.999
+   */
+  function endOfDay(date, options) {
+    const _date = toDate(date, options?.in);
+    _date.setHours(23, 59, 59, 999);
+    return _date;
+  }
+
+  /**
+   * The {@link endOfMonth} function options.
+   */
+
+  /**
+   * @name endOfMonth
+   * @category Month Helpers
+   * @summary Return the end of a month for the given date.
+   *
+   * @description
+   * Return the end of a month for the given date.
+   * The result will be in the local timezone.
+   *
+   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+   * @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
+   *
+   * @param date - The original date
+   * @param options - An object with options
+   *
+   * @returns The end of a month
+   *
+   * @example
+   * // The end of a month for 2 September 2014 11:55:00:
+   * const result = endOfMonth(new Date(2014, 8, 2, 11, 55, 0))
+   * //=> Tue Sep 30 2014 23:59:59.999
+   */
+  function endOfMonth(date, options) {
+    const _date = toDate(date, options?.in);
+    const month = _date.getMonth();
+    _date.setFullYear(_date.getFullYear(), month + 1, 0);
+    _date.setHours(23, 59, 59, 999);
+    return _date;
+  }
+
+  /**
+   * @name isLastDayOfMonth
+   * @category Month Helpers
+   * @summary Is the given date the last day of a month?
+   *
+   * @description
+   * Is the given date the last day of a month?
+   *
+   * @param date - The date to check
+   * @param options - An object with options
+   *
+   * @returns The date is the last day of a month
+   *
+   * @example
+   * // Is 28 February 2014 the last day of a month?
+   * const result = isLastDayOfMonth(new Date(2014, 1, 28))
+   * //=> true
+   */
+  function isLastDayOfMonth(date, options) {
+    const _date = toDate(date, options?.in);
+    return +endOfDay(_date, options) === +endOfMonth(_date, options);
+  }
+
+  /**
+   * The {@link differenceInMonths} function options.
+   */
+
+  /**
+   * @name differenceInMonths
+   * @category Month Helpers
+   * @summary Get the number of full months between the given dates.
+   *
+   * @param laterDate - The later date
+   * @param earlierDate - The earlier date
+   * @param options - An object with options
+   *
+   * @returns The number of full months
+   *
+   * @example
+   * // How many full months are between 31 January 2014 and 1 September 2014?
+   * const result = differenceInMonths(new Date(2014, 8, 1), new Date(2014, 0, 31))
+   * //=> 7
+   */
+  function differenceInMonths(laterDate, earlierDate, options) {
+    const [laterDate_, workingLaterDate, earlierDate_] = normalizeDates(
+      options?.in,
+      laterDate,
+      laterDate,
+      earlierDate,
+    );
+
+    const sign = compareAsc(workingLaterDate, earlierDate_);
+    const difference = Math.abs(
+      differenceInCalendarMonths(workingLaterDate, earlierDate_),
+    );
+
+    if (difference < 1) return 0;
+
+    if (workingLaterDate.getMonth() === 1 && workingLaterDate.getDate() > 27)
+      workingLaterDate.setDate(30);
+
+    workingLaterDate.setMonth(workingLaterDate.getMonth() - sign * difference);
+
+    let isLastMonthNotFull = compareAsc(workingLaterDate, earlierDate_) === -sign;
+
+    if (
+      isLastDayOfMonth(laterDate_) &&
+      difference === 1 &&
+      compareAsc(laterDate_, earlierDate_) === 1
+    ) {
+      isLastMonthNotFull = false;
+    }
+
+    const result = sign * (difference - +isLastMonthNotFull);
+    return result === 0 ? 0 : result;
+  }
+
+  function getRoundingMethod(method) {
+    return (number) => {
+      const round = method ? Math[method] : Math.trunc;
+      const result = round(number);
+      // Prevent negative zero
+      return result === 0 ? 0 : result;
+    };
+  }
+
+  /**
+   * @name differenceInMilliseconds
+   * @category Millisecond Helpers
+   * @summary Get the number of milliseconds between the given dates.
+   *
+   * @description
+   * Get the number of milliseconds between the given dates.
+   *
+   * @param laterDate - The later date
+   * @param earlierDate - The earlier date
+   *
+   * @returns The number of milliseconds
+   *
+   * @example
+   * // How many milliseconds are between
+   * // 2 July 2014 12:30:20.600 and 2 July 2014 12:30:21.700?
+   * const result = differenceInMilliseconds(
+   *   new Date(2014, 6, 2, 12, 30, 21, 700),
+   *   new Date(2014, 6, 2, 12, 30, 20, 600)
+   * )
+   * //=> 1100
+   */
+  function differenceInMilliseconds(laterDate, earlierDate) {
+    return +toDate(laterDate) - +toDate(earlierDate);
+  }
+
+  /**
+   * The {@link differenceInSeconds} function options.
+   */
+
+  /**
+   * @name differenceInSeconds
+   * @category Second Helpers
+   * @summary Get the number of seconds between the given dates.
+   *
+   * @description
+   * Get the number of seconds between the given dates.
+   *
+   * @param laterDate - The later date
+   * @param earlierDate - The earlier date
+   * @param options - An object with options.
+   *
+   * @returns The number of seconds
+   *
+   * @example
+   * // How many seconds are between
+   * // 2 July 2014 12:30:07.999 and 2 July 2014 12:30:20.000?
+   * const result = differenceInSeconds(
+   *   new Date(2014, 6, 2, 12, 30, 20, 0),
+   *   new Date(2014, 6, 2, 12, 30, 7, 999)
+   * )
+   * //=> 12
+   */
+  function differenceInSeconds(laterDate, earlierDate, options) {
+    const diff = differenceInMilliseconds(laterDate, earlierDate) / 1000;
+    return getRoundingMethod(options?.roundingMethod)(diff);
   }
 
   /**
@@ -1194,10 +1203,8 @@
    * | 40 secs ... 60 secs    | less than a minute   |
    * | 60 secs ... 90 secs    | 1 minute             |
    *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param date - The date
-   * @param baseDate - The date to compare with
+   * @param laterDate - The date
+   * @param earlierDate - The date to compare with
    * @param options - An object with options
    *
    * @returns The distance in words
@@ -1237,37 +1244,29 @@
    * })
    * //=> 'pli ol 1 jaro'
    */
-
-  function formatDistance(date, baseDate, options) {
+  function formatDistance(laterDate, earlierDate, options) {
     const defaultOptions = getDefaultOptions();
     const locale = options?.locale ?? defaultOptions.locale ?? enUS;
     const minutesInAlmostTwoDays = 2520;
 
-    const comparison = compareAsc(date, baseDate);
+    const comparison = compareAsc(laterDate, earlierDate);
 
-    if (isNaN(comparison)) {
-      throw new RangeError("Invalid time value");
-    }
+    if (isNaN(comparison)) throw new RangeError("Invalid time value");
 
     const localizeOptions = Object.assign({}, options, {
       addSuffix: options?.addSuffix,
       comparison: comparison,
     });
 
-    let dateLeft;
-    let dateRight;
-    if (comparison > 0) {
-      dateLeft = toDate(baseDate);
-      dateRight = toDate(date);
-    } else {
-      dateLeft = toDate(date);
-      dateRight = toDate(baseDate);
-    }
+    const [laterDate_, earlierDate_] = normalizeDates(
+      options?.in,
+      ...(comparison > 0 ? [earlierDate, laterDate] : [laterDate, earlierDate]),
+    );
 
-    const seconds = differenceInSeconds(dateRight, dateLeft);
+    const seconds = differenceInSeconds(earlierDate_, laterDate_);
     const offsetInSeconds =
-      (getTimezoneOffsetInMilliseconds(dateRight) -
-        getTimezoneOffsetInMilliseconds(dateLeft)) /
+      (getTimezoneOffsetInMilliseconds(earlierDate_) -
+        getTimezoneOffsetInMilliseconds(laterDate_)) /
       1000;
     const minutes = Math.round((seconds - offsetInSeconds) / 60);
     let months;
@@ -1324,7 +1323,7 @@
       return locale.formatDistance("aboutXMonths", months, localizeOptions);
     }
 
-    months = differenceInMonths(dateRight, dateLeft);
+    months = differenceInMonths(earlierDate_, laterDate_);
 
     // 2 months up to 12 months
     if (months < 12) {
@@ -1392,8 +1391,6 @@
    * | 20 secs ... 40 secs | half a minute        |
    * | 40 secs ... 60 secs | less than a minute   |
    * | 60 secs ... 90 secs | 1 minute             |
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
    *
    * @param date - The given date
    * @param options - The object with options
@@ -1469,10 +1466,8 @@
    * | 1 ... 11 months        | [1..11] months      |
    * | 1 ... N years          | [1..N]  years       |
    *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
-   * @param date - The date
-   * @param baseDate - The date to compare with
+   * @param laterDate - The date
+   * @param earlierDate - The date to compare with
    * @param options - An object with options
    *
    * @returns The distance in words
@@ -1530,11 +1525,11 @@
    * //=> '1 jaro'
    */
 
-  function formatDistanceStrict(date, baseDate, options) {
+  function formatDistanceStrict(laterDate, earlierDate, options) {
     const defaultOptions = getDefaultOptions();
     const locale = options?.locale ?? defaultOptions.locale ?? enUS;
 
-    const comparison = compareAsc(date, baseDate);
+    const comparison = compareAsc(laterDate, earlierDate);
 
     if (isNaN(comparison)) {
       throw new RangeError("Invalid time value");
@@ -1545,24 +1540,19 @@
       comparison: comparison,
     });
 
-    let dateLeft;
-    let dateRight;
-    if (comparison > 0) {
-      dateLeft = toDate(baseDate);
-      dateRight = toDate(date);
-    } else {
-      dateLeft = toDate(date);
-      dateRight = toDate(baseDate);
-    }
+    const [laterDate_, earlierDate_] = normalizeDates(
+      options?.in,
+      ...(comparison > 0 ? [earlierDate, laterDate] : [laterDate, earlierDate]),
+    );
 
     const roundingMethod = getRoundingMethod(options?.roundingMethod ?? "round");
 
-    const milliseconds = dateRight.getTime() - dateLeft.getTime();
+    const milliseconds = earlierDate_.getTime() - laterDate_.getTime();
     const minutes = milliseconds / millisecondsInMinute;
 
     const timezoneOffset =
-      getTimezoneOffsetInMilliseconds(dateRight) -
-      getTimezoneOffsetInMilliseconds(dateLeft);
+      getTimezoneOffsetInMilliseconds(earlierDate_) -
+      getTimezoneOffsetInMilliseconds(laterDate_);
 
     // Use DST-normalized difference in minutes for years, months and days;
     // use regular difference in minutes for hours, minutes and seconds.
@@ -1647,8 +1637,6 @@
    * | 1 ... 11 months        | [1..11] months      |
    * | 1 ... N years          | [1..N]  years       |
    *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
-   *
    * @param date - The given date
    * @param options - An object with options.
    *
@@ -1723,6 +1711,7 @@
    * the values are invalid, it returns Invalid Date.
    *
    * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
+   * @typeParam ResultDate - The result `Date` type, it is the type returned from the context function if it is passed, or inferred from the arguments.
    *
    * @param argument - The value to convert
    * @param options - An object with options
@@ -1741,6 +1730,8 @@
    * //=> Fri Apr 11 2014 00:00:00
    */
   function parseISO(argument, options) {
+    const invalidDate = () => constructFrom(options?.in, NaN);
+
     const additionalDigits = options?.additionalDigits ?? 2;
     const dateStrings = splitDateString(argument);
 
@@ -1750,49 +1741,38 @@
       date = parseDate(parseYearResult.restDateString, parseYearResult.year);
     }
 
-    if (!date || isNaN(date.getTime())) {
-      return new Date(NaN);
-    }
+    if (!date || isNaN(+date)) return invalidDate();
 
-    const timestamp = date.getTime();
+    const timestamp = +date;
     let time = 0;
     let offset;
 
     if (dateStrings.time) {
       time = parseTime(dateStrings.time);
-      if (isNaN(time)) {
-        return new Date(NaN);
-      }
+      if (isNaN(time)) return invalidDate();
     }
 
     if (dateStrings.timezone) {
       offset = parseTimezone(dateStrings.timezone);
-      if (isNaN(offset)) {
-        return new Date(NaN);
-      }
+      if (isNaN(offset)) return invalidDate();
     } else {
-      const dirtyDate = new Date(timestamp + time);
-      // JS parsed string assuming it's in UTC timezone
-      // but we need it to be parsed in our timezone
-      // so we use utc values to build date in our timezone.
-      // Year values from 0 to 99 map to the years 1900 to 1999
-      // so set year explicitly with setFullYear.
-      const result = new Date(0);
+      const tmpDate = new Date(timestamp + time);
+      const result = toDate(0, options?.in);
       result.setFullYear(
-        dirtyDate.getUTCFullYear(),
-        dirtyDate.getUTCMonth(),
-        dirtyDate.getUTCDate(),
+        tmpDate.getUTCFullYear(),
+        tmpDate.getUTCMonth(),
+        tmpDate.getUTCDate(),
       );
       result.setHours(
-        dirtyDate.getUTCHours(),
-        dirtyDate.getUTCMinutes(),
-        dirtyDate.getUTCSeconds(),
-        dirtyDate.getUTCMilliseconds(),
+        tmpDate.getUTCHours(),
+        tmpDate.getUTCMinutes(),
+        tmpDate.getUTCSeconds(),
+        tmpDate.getUTCMilliseconds(),
       );
       return result;
     }
 
-    return new Date(timestamp + time + offset);
+    return toDate(timestamp + time + offset, options?.in);
   }
 
   const patterns = {
@@ -2005,8 +1985,6 @@
    *
    * @description
    * Is the given date in the past?
-   *
-   * @typeParam DateType - The `Date` type, the function operates on. Gets inferred from passed arguments. Allows to use extensions like [`UTCDate`](https://github.com/date-fns/utc).
    *
    * @param date - The date to check
    *
