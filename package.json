@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/marcreichel/alpine-timeago#readme",
   "dependencies": {
-    "date-fns": "^2.14.0"
+    "date-fns": "^3.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.8",
