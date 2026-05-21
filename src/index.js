@@ -1,7 +1,7 @@
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
-import parseISO from "date-fns/parseISO";
-import isPast from "date-fns/isPast";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { formatDistanceToNowStrict } from "date-fns/formatDistanceToNowStrict";
+import { parseISO } from "date-fns/parseISO";
+import { isPast } from "date-fns/isPast";
 
 let locale = null;
 
